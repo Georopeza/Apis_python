@@ -1,0 +1,54 @@
+
+version: '3.10'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./backend/:/backend/
+    command: uvicorn shared.core.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    env_file:
+      - ./backend/.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - local-app-network
+
+  db:
+    container_name: postgres_container
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./backend/.env
+    ports:
+      - 5432:5432
+    networks:
+      - local-app-network
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    networks:
+      - local-app-network
+    depends_on: 
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+networks:
+  local-app-network:
+
+volumes:
+  postgres_data:
+  pgadmin-data:
