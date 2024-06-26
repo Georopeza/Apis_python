@@ -1,0 +1,21 @@
+1. **Estructura del Código:**
+   - El código define un **enrutador** (`router`) en FastAPI. Los enrutadores se utilizan para agrupar rutas relacionadas en una aplicación.
+   - El enrutador tiene dos rutas:
+     - `GET /books/`: Devuelve una lista de libros.
+     - `POST /books/`: Agrega un nuevo libro.
+
+2. **Dependencias y Servicio de Dominio:**
+   - El enrutador utiliza una **dependencia** llamada `library_service`. Esta dependencia se resuelve mediante la función `get_library_service()`.
+   - La función `get_library_service()` crea una instancia de `LibraryService` y la inicializa con un repositorio de libros (`SQLAlchemyBookRepository`).
+
+3. **Servicio de Dominio (`LibraryService`):**
+   - El servicio de dominio (`LibraryService`) es responsable de la lógica de negocio relacionada con los libros.
+   - Proporciona dos métodos:
+     - `get_all_books()`: Obtiene todos los libros.
+     - `add_book(book: BookCreate)`: Agrega un nuevo libro.
+
+4. **Modelos y Schemas:**
+   - Se utilizan los modelos `BookCreate` y `Book` definidos en el esquema (`schemas`) para representar los datos de los libros.
+
+5. **Persistencia y Repositorio:**
+   - El repositorio `SQLAlchemyBookRepository` se utiliza para acceder a la capa de persistencia (base de datos) y realizar operaciones CRUD en los libros.
