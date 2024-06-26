@@ -19,3 +19,46 @@
 
 5. **Persistencia y Repositorio:**
    - El repositorio `SQLAlchemyBookRepository` se utiliza para acceder a la capa de persistencia (base de datos) y realizar operaciones CRUD en los libros.
+<-------------------------------------------------------------------------------------------------------------------------------------------------------------->>
+TEORIA
+Resumen detallado sobre cómo estructurar una aplicación en **FastAPI** siguiendo los principios de **Desarrollo Orientado al Dominio (DDD)** y cómo usarla. A continuación, te presento los pasos clave:
+
+1. **Organización del Proyecto:**
+   - Divide tu proyecto en módulos o carpetas relacionadas con áreas específicas de la aplicación.
+   - Por ejemplo, puedes tener módulos para entidades, servicios de dominio, rutas, esquemas, repositorios, etc.
+
+2. **Modelo de Dominio:**
+   - Define tus **entidades** y **agregados** relacionados con el dominio de tu aplicación.
+   - Las **entidades** representan conceptos del mundo real (por ejemplo, usuarios, productos, pedidos).
+   - Los **agregados** agrupan entidades relacionadas y definen límites de transacciones y consistencia.
+
+3. **Servicios de Dominio:**
+   - Implementa la lógica de negocio compleja en **servicios de dominio**.
+   - Los servicios de dominio actúan como intermediarios entre las rutas/controladores y los repositorios.
+   - Por ejemplo, un servicio de dominio puede manejar la lógica de registro de usuarios o procesamiento de pedidos.
+
+4. **Repositorios:**
+   - Abstrae el acceso a la capa de persistencia (base de datos, API externas, etc.).
+   - Define métodos para recuperar y persistir entidades y agregados.
+   - Por ejemplo, un repositorio de usuarios puede proporcionar métodos para buscar, crear y actualizar usuarios.
+
+5. **Rutas y Controladores:**
+   - Define rutas utilizando FastAPI.
+   - Crea controladores que llamen a los servicios de dominio para procesar las solicitudes.
+   - Utiliza dependencias para inyectar servicios de dominio en tus rutas.
+
+6. **Esquemas (Schemas):**
+   - Define esquemas para validar y serializar datos.
+   - Utiliza los esquemas para representar las respuestas y solicitudes de tu API.
+
+7. **Ejemplo Práctico:**
+   - Imagina que estás construyendo una aplicación de comercio electrónico.
+   - Tendrías entidades como `Usuario`, `Producto`, `Pedido`, etc.
+   - Crearías servicios de dominio para manejar la autenticación, el catálogo de productos, el procesamiento de pedidos, etc.
+   - Las rutas y controladores se encargarían de manejar las solicitudes HTTP y llamarían a los servicios de dominio correspondientes.
+
+8. **Ejecución y Pruebas:**
+   - Ejecuta tu aplicación con Uvicorn: `uvicorn main:app --reload`.
+   - Prueba tus rutas utilizando herramientas como **curl**, **Postman** o **Swagger UI**.
+
+En resumen, la estructura orientada al dominio en FastAPI te ayuda a crear aplicaciones más mantenibles, centradas en la lógica de negocio y escalables. Si tienes más preguntas o necesitas ejemplos específicos, no dudes en preguntar. 😊
