@@ -22,3 +22,47 @@ def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"msg": "Hello World"}
+
+<------------------------------------------------------------------------------------------------------------------------------><
+Teoria
+Por supuesto, puedo proporcionarte información sobre cómo implementar pruebas en una aplicación **FastAPI**. Aquí tienes un resumen detallado:
+
+1. **Pruebas en FastAPI:**
+   - FastAPI facilita la escritura de pruebas unitarias y de integración para tu aplicación.
+   - Puedes utilizar herramientas como **Pytest** para escribir y ejecutar pruebas.
+
+2. **Estructura de Pruebas:**
+   - Crea una carpeta llamada `tests` en tu proyecto.
+   - Dentro de esta carpeta, crea archivos de prueba (por ejemplo, `test_main.py`) para cada módulo o funcionalidad que deseas probar.
+
+3. **Ejemplo de Prueba Unitaria:**
+   - Supongamos que tienes una ruta en tu aplicación que maneja el registro de usuarios.
+   - En `test_main.py`, puedes escribir una prueba unitaria para esa ruta:
+
+     ```python
+     from fastapi.testclient import TestClient
+     from main import app
+
+     client = TestClient(app)
+
+     def test_register_user():
+         response = client.post("/users/", json={"username": "testuser", "email": "test@example.com"})
+         assert response.status_code == 200
+         assert response.json() == {"message": "Usuario registrado exitosamente"}
+     ```
+
+4. **Ejecución de Pruebas:**
+   - Ejecuta tus pruebas con Pytest: `pytest`.
+   - Pytest buscará automáticamente los archivos de prueba y ejecutará las funciones de prueba.
+
+5. **Documentación Interactiva:**
+   - FastAPI genera automáticamente una documentación interactiva (Swagger UI) para tus rutas.
+   - Puedes probar tus rutas directamente desde la interfaz de Swagger.
+
+6. **Configuración de Cobertura:**
+   - Si deseas medir la cobertura de tus pruebas, puedes usar herramientas como **Coverage.py**.
+   - Instálalo con `pip install coverage`.
+   - Ejecuta tus pruebas con cobertura: `coverage run -m pytest`.
+   - Genera un informe de cobertura: `coverage report`.
+
+En resumen, sigue las mejores prácticas para escribir pruebas en FastAPI y asegúrate de cubrir todas las funcionalidades importantes de tu aplicación. Si necesitas más detalles o ejemplos específicos, no dudes en preguntar. 😊
