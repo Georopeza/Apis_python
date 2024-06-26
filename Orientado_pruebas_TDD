@@ -22,6 +22,95 @@ def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"msg": "Hello World"}
+<------------------------------------------------------------------------------------------------------------------------------------------------>>
+EJEMPLO BASADO EN EL QUIZ 3 ORIENTADO A PRUEBAS
+
+1. **Crea la Aplicación FastAPI:**
+   - Crea un archivo llamado `main.py` con el siguiente contenido:
+
+    
+     from fastapi import FastAPI, HTTPException
+     from typing import List
+
+     app = FastAPI()
+
+     # Simulación de una lista de usuarios (reemplaza con tu base de datos real)
+     users_db = [
+         {"id": 1, "username": "user1"},
+         {"id": 2, "username": "user2"},
+         # ... más usuarios ...
+     ]
+
+     @app.get("/users/", response_model=List[dict])
+     def get_all_users():
+         return users_db
+
+     @app.get("/users/{user_id}", response_model=dict)
+     def get_user_by_id(user_id: int):
+         try:
+             return users_db[user_id - 1]
+         except IndexError:
+             raise HTTPException(status_code=404, detail="Usuario no encontrado")
+     
+
+2. **Pruebas Unitarias:**
+   - Crea un archivo llamado `test_main.py` en la carpeta `tests`.
+   - Escribe pruebas para verificar la existencia de ambos endpoints y su correcto funcionamiento:
+
+
+     from fastapi.testclient import TestClient
+     from main import app
+
+     client = TestClient(app)
+
+     def test_get_all_users():
+         response = client.get("/users/")
+         assert response.status_code == 200
+         assert len(response.json()) == len(users_db)
+
+     def test_get_user_by_id():
+         response = client.get("/users/1")
+         assert response.status_code == 200
+         assert response.json() == users_db[0]
+
+         response_invalid_id = client.get("/users/999")
+         assert response_invalid_id.status_code == 404
+     
+
+3. **Dockerfile:**
+   - Crea un archivo llamado `Dockerfile` en la raíz del proyecto:
+
+     Dockerfile
+     FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
+
+     COPY ./app /app
+     
+
+4. **docker-compose.yml:**
+   - Crea un archivo llamado `docker-compose.yml` en la raíz del proyecto:
+
+     yaml
+     version: '3.8'
+     services:
+       app:
+         build:
+           context: .
+           dockerfile: Dockerfile
+         ports:
+           - "8000:80"
+     
+
+5. **requirements.txt:**
+   - Crea un archivo llamado `requirements.txt` con las dependencias necesarias:
+
+     ```
+     fastapi
+     uvicorn
+     ```
+
+6. **Ejecución:**
+   - Ejecuta `docker-compose up -d` para construir y ejecutar el contenedor.
+   - Accede a la aplicación en [http://localhost:8000](http://localhost:8000).
 
 <------------------------------------------------------------------------------------------------------------------------------><
 Teoria
