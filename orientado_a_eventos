@@ -1,0 +1,72 @@
+Ejemplo de cómo implementar una arquitectura orientada a eventos utilizando FastAPI y Kafka:
+
+Configuración de Kafka:
+Primero, necesitamos configurar un clúster de Kafka. Puedes utilizar Docker y Docker Compose para configurar un clúster de Kafka localmente. Aquí está un ejemplo de archivo docker-compose.yml:
+version: '3.8'
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENERS: PLAINTEXT://kafka-1:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+
+Ejecuta docker-compose up -d para iniciar el clúster de Kafka.
+Productor de Kafka (Backend):
+Configura tu aplicación de backend para enviar eventos de registro de usuarios a Kafka. Utilizaremos FastAPI y la biblioteca kafka-python.
+Aquí está un ejemplo de main.py:
+Python
+
+from fastapi import FastAPI
+from kafka import KafkaProducer
+import json
+
+app = FastAPI()
+KAFKA_SERVER = "localhost:9092"
+KAFKA_TOPIC = "user_registered"
+
+producer = KafkaProducer(
+    bootstrap_servers=[KAFKA_SERVER],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+@app.post("/users/")
+def create_user(username: str, email: str):
+    user_event = {"username": username, "email": email}
+    producer.send(KAFKA_TOPIC, value=user_event)
+    return {"message": "Usuario registrado exitosamente"}
+Código generado por IA. Revisar y usar cuidadosamente. Más información sobre preguntas frecuentes.
+Consumidor de Kafka:
+Configura un script de Python para consumir los eventos de registro de usuarios desde Kafka. Por ejemplo, crea un archivo consumer.py:
+Python
+
+import json
+from kafka import KafkaConsumer
+
+consumer = KafkaConsumer(
+    "user_registered",
+    bootstrap_servers=["localhost:9092"],
+    value_deserializer=lambda m: json.loads(m.decode("utf-8"))
+)
+
+for message in consumer:
+    print(message.value)
